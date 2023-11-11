@@ -8,28 +8,44 @@ import {
 	faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import Tag from "./Tag";
-import { useEffect, useState } from "react";
+import { fetcher } from "../helpers/fetcher";
+import useSWR from "swr";
+
+function useCoffeeList() {
+	const { data, error, isLoading } = useSWR(
+		"http://localhost:8000/coffees",
+		fetcher
+	);
+	return {
+		coffeeData: data,
+		error,
+		isLoading,
+	};
+}
 
 export default function List() {
-	const [coffeeData, setCoffeeData] = useState([]);
-
-	useEffect(() => {
-		fetch("http://localhost:8000/coffees", {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-		})
-			.then((response) => response.json())
-			.then((data) => setCoffeeData(data.results));
-	}, []);
+	const { coffeeData, error, isLoading } = useCoffeeList();
 
 	console.log(coffeeData);
+
+	if (isLoading) {
+		return (
+			<div className="py-5 flex flex-col items-center">
+				<div className="md:w-[768px] w-[97%] flex flex-col gap-4">
+					<Card>
+						<div className="p-3 flex justify-center text-xl">
+							Loading...
+						</div>
+					</Card>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="py-5 flex flex-col items-center">
 			<div className="md:w-[768px] w-[97%] flex flex-col gap-4">
-				{coffeeData.map((coffee) => (
+				{coffeeData.results.map((coffee) => (
 					<Card key={coffee.name}>
 						<div className="p-3 flex justify-center text-xl">
 							{coffee.name}
