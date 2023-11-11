@@ -6,7 +6,8 @@ router = routers.DefaultRouter()
 router.register(r'coffees', views.CoffeeViewSet)
 router.register(r'flavors', views.FlavorViewSet)
 router.register(r'origins', views.OriginViewSet)
-router.register(r'coffee-flavors', views.CoffeeFlavorViewSet)
+router.register(r'species', views.SpeciesViewSet)
+router.register(r'roasts', views.RoastViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

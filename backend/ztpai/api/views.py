@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework import permissions
-from ztpai.api.serializers import CoffeeSerializer, FlavorSerializer, OriginSerializer, CoffeeFlavorSerializer
+from ztpai.api.serializers import CoffeeSerializer, FlavorSerializer, OriginSerializer
+from ztpai.api.serializers import SpeciesSerializer, RoastSerializer
 
 # Create your views here.
 
-from ztpai.api.models import Coffee, Flavor, Origin, CoffeeFlavor
+from ztpai.api.models import Coffee, Flavor, Origin, Species, Roast
 
 
 class CoffeeViewSet(viewsets.ModelViewSet):
@@ -23,6 +24,11 @@ class OriginViewSet(viewsets.ModelViewSet):
     serializer_class = OriginSerializer
 
 
-class CoffeeFlavorViewSet(viewsets.ModelViewSet):
-    queryset = CoffeeFlavor.objects.all()
-    serializer_class = CoffeeFlavorSerializer
+class SpeciesViewSet(viewsets.ModelViewSet):
+    queryset = Species.objects.all()
+    serializer_class = SpeciesSerializer
+
+
+class RoastViewSet(viewsets.ModelViewSet):
+    queryset = Roast.objects.all()
+    serializer_class = RoastSerializer

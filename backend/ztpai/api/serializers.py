@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ztpai.api.models import Coffee, Flavor, Origin, CoffeeFlavor
+from ztpai.api.models import Coffee, Flavor, Origin, Species, Roast
 
 
 class CoffeeSerializer(serializers.HyperlinkedModelSerializer):
@@ -8,9 +8,19 @@ class CoffeeSerializer(serializers.HyperlinkedModelSerializer):
     origin = serializers.PrimaryKeyRelatedField(
         queryset=Origin.objects.all(), many=False)
 
+    roast = serializers.PrimaryKeyRelatedField(
+        queryset=Roast.objects.all(), many=False)
+
+    species = serializers.PrimaryKeyRelatedField(
+        queryset=Species.objects.all(), many=True)
+
+    flavors = serializers.PrimaryKeyRelatedField(
+        queryset=Flavor.objects.all(), many=True)
+
     class Meta:
         model = Coffee
-        fields = ['name', 'roast', 'origin', 'species', 'date_added']
+        fields = ['name', 'roast', 'origin',
+                  'species', 'flavors', 'date_added']
 
 
 class FlavorSerializer(serializers.HyperlinkedModelSerializer):
@@ -25,7 +35,13 @@ class OriginSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['name']
 
 
-class CoffeeFlavorSerializer(serializers.HyperlinkedModelSerializer):
+class SpeciesSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = CoffeeFlavor
-        fields = ['coffee', 'flavor']
+        model = Species
+        fields = ['name']
+
+
+class RoastSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Roast
+        fields = ['name']
