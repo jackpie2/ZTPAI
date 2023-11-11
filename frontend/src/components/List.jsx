@@ -32,7 +32,7 @@ export default function List() {
 				{coffeeData.map((coffee) => (
 					<Card key={coffee.name}>
 						<div className="p-3 flex justify-center text-xl">
-							Nazwa kawy
+							{coffee.name}
 						</div>
 						<Divider />
 						<div className="flex p-5 gap-5 items-center">
@@ -73,11 +73,11 @@ export default function List() {
 										<span>{coffee.species ?? "?"}</span>
 									</div>
 								</div>
-								{/* <div className="flex gap-2 flex-wrap items-center flex-grow">
-									{coffee.tags.map((tag) => (
+								<div className="flex gap-2 flex-wrap items-center flex-grow">
+									{coffee.flavors.map((tag) => (
 										<Tag key={tag}>{tag}</Tag>
 									))}
-								</div> */}
+								</div>
 							</div>
 						</div>
 					</Card>
