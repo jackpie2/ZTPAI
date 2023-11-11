@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv, dotenv_values
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -80,6 +81,7 @@ WSGI_APPLICATION = 'ztpai.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+load_dotenv()
 
 DATABASES = {
     # 'default': {
@@ -91,8 +93,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': 'HkaMcbMrVK9gP6Jxin',
-        'HOST': 'db.psrdjzfnndatxponkfrf.supabase.co',
+        'PASSWORD': dotenv_values(".env")['PASSWORD'],
+        'HOST': dotenv_values(".env")['HOST'],
         'PORT': '5432',
     }
 }
