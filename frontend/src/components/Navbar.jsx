@@ -8,9 +8,23 @@ export default function Navbar() {
 				<FontAwesomeIcon className="text-muted" icon={faMugHot} />
 				CoffeeDB
 			</a>
-			<a href="/login" className="text-muted text-2xl">
-				Login
-			</a>
+			{localStorage.getItem("token") ? (
+				<a
+					className="text-muted text-2xl"
+					href="/"
+					onClick={() => {
+						localStorage.removeItem("token");
+						localStorage.removeItem("refresh");
+						window.location.href = "/";
+					}}
+				>
+					Logout
+				</a>
+			) : (
+				<a href="/login" className="text-muted text-2xl">
+					Login
+				</a>
+			)}
 		</div>
 	);
 }

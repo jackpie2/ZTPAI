@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'ztpai.api.apps.ApiConfig',
     "corsheaders",
+    'drf_yasg',
 ]
 
 CORS_ALLOWED_ORIGINS = [

@@ -30,3 +30,9 @@ class Roast(models.Model):
 
 class Species(models.Model):
     name = models.TextField(primary_key=True)
+
+
+class User(models.Model):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    email = models.TextField()
+    password = models.TextField()

@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from ztpai.api.models import Coffee, Flavor, Origin, Species, Roast
+from ztpai.api.models import Coffee, Flavor, Origin, Species, Roast, User
 from django.contrib.auth.models import User as AuthUser
+from django.contrib.auth.hashers import make_password
 
 
 class CoffeeSerializer(serializers.HyperlinkedModelSerializer):
@@ -50,15 +51,23 @@ class RoastSerializer(serializers.HyperlinkedModelSerializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AuthUser
+        model = User
         fields = ['email', 'password']
 
     def create(self, validated_data):
-        user = AuthUser.objects.create_user(
+        user = User.objects.create(
             email=validated_data['email'],
-            password=validated_data['password'],
-            username=validated_data['email']
+            password=make_password(validated_data['password'])
         )
 
         user.save()
         return user
+
+
+class SignInSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    password = serializers.CharField()
+
+
+class RefreshSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
