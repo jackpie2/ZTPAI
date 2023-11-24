@@ -1,5 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMugHot } from "@fortawesome/free-solid-svg-icons";
+import {
+	faMugHot,
+	faArrowRightToBracket,
+	faArrowRightFromBracket,
+	faUser,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function Navbar() {
 	return (
@@ -9,19 +14,33 @@ export default function Navbar() {
 				CoffeeDB
 			</a>
 			{localStorage.getItem("token") ? (
-				<a
-					className="text-muted text-2xl"
-					href="/"
-					onClick={() => {
-						localStorage.removeItem("token");
-						localStorage.removeItem("refresh");
-						window.location.href = "/";
-					}}
-				>
-					Logout
-				</a>
+				<div className="flex gap-4">
+					<a
+						href="/profile"
+						className="text-muted text-xl flex items-center gap-2"
+					>
+						<FontAwesomeIcon icon={faUser} />
+						Profile
+					</a>
+					<a
+						className="text-muted text-xl flex items-center gap-2"
+						href="/"
+						onClick={() => {
+							localStorage.removeItem("token");
+							localStorage.removeItem("refresh");
+							window.location.href = "/";
+						}}
+					>
+						<FontAwesomeIcon icon={faArrowRightFromBracket} />
+						Logout
+					</a>
+				</div>
 			) : (
-				<a href="/login" className="text-muted text-2xl">
+				<a
+					href="/login"
+					className="text-muted text-xl flex items-center gap-2"
+				>
+					<FontAwesomeIcon icon={faArrowRightToBracket} />
 					Login
 				</a>
 			)}
