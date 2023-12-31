@@ -6,6 +6,7 @@ import Login from "./routes/login.jsx";
 import Layout from "./routes/layout.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Profile from "./routes/profile.jsx";
+import Coffee from "./routes/coffee.jsx";
 
 const router = createBrowserRouter([
 	{
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
 				path: "/profile",
 				element: <Profile />,
 			},
+			{
+				path: "/coffee/:coffeeId",
+				element: <Coffee />,
+			}
 		],
 	},
 ]);

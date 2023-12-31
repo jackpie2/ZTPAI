@@ -21,10 +21,10 @@ class CoffeeSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Coffee
-        fields = ['name', 'roast', 'origin',
+        fields = ['id', 'name', 'roast', 'origin',
                   'species', 'flavors', 'date_added']
-
-
+        
+        
 class FlavorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Flavor

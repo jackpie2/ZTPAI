@@ -10,6 +10,8 @@ import {
 import Tag from "./Tag";
 import { fetcher } from "../helpers/fetcher";
 import useSWR from "swr";
+import { Link } from "react-router-dom";
+
 
 function useCoffeeList() {
 	const { data, error, isLoading } = useSWR(
@@ -25,8 +27,6 @@ function useCoffeeList() {
 
 export default function List() {
 	const { coffeeData, error, isLoading } = useCoffeeList();
-
-	console.log(coffeeData);
 
 	if (isLoading) {
 		return (
@@ -46,7 +46,8 @@ export default function List() {
 		// <div className="py-5 flex flex-col items-center">
 		<div className="md:w-[768px] w-[97%] flex flex-col gap-4">
 			{coffeeData.results.map((coffee) => (
-				<Card key={coffee.name}>
+				<Link to={`/coffee/${coffee.id}`} key={coffee.name}>
+				<Card >
 					<div className="p-3 flex justify-center text-xl">
 						{coffee.name}
 					</div>
@@ -97,6 +98,7 @@ export default function List() {
 						</div>
 					</div>
 				</Card>
+				</Link>
 			))}
 		</div>
 		// </div>
