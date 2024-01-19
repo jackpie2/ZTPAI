@@ -1,12 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
+import "./global.css";
 import Root from "./routes/root.jsx";
 import Login from "./routes/login.jsx";
 import Layout from "./routes/layout.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Profile from "./routes/profile.jsx";
 import Coffee from "./routes/coffee.jsx";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const router = createBrowserRouter([
 	{
@@ -32,13 +33,15 @@ const router = createBrowserRouter([
 			{
 				path: "/coffee/:coffeeId",
 				element: <Coffee />,
-			}
+			},
 		],
 	},
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
 	<React.StrictMode>
-		<RouterProvider router={router} />
+		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+			<RouterProvider router={router} />
+		</ThemeProvider>
 	</React.StrictMode>
 );

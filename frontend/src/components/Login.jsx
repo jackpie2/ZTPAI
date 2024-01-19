@@ -1,8 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMugHot } from "@fortawesome/free-solid-svg-icons";
-import Card from "./Card";
+// import Card from "./Card";
 import Divider from "./Divider";
 import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Coffee } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function Login({ type = "login" }) {
 	const [email, setEmail] = useState("");
@@ -66,82 +71,89 @@ export default function Login({ type = "login" }) {
 	return (
 		<div className="flex flex-col flex-grow justify-center">
 			<Card className="w-1/2 mx-auto">
-				<div className="flex flex-col gap-4 items-center">
-					<div className="pt-4 flex gap-2 text-2xl items-center">
-						<FontAwesomeIcon
-							className="text-muted"
-							icon={faMugHot}
-						/>
-						CoffeeDB
-					</div>
-					<Divider />
-					<div className="pb-4 flex flex-col gap-2 text-lg">
-						<div>
-							<h2 className="font-mono">Email</h2>
-							<input
-								value={email}
-								onChange={(e) => setEmail(e.target.value)}
-							></input>
+				<CardHeader>
+					<CardTitle>
+						<div className="flex text-lg gap-2 justify-center items-center">
+							<Coffee />
+							CoffeeDB
 						</div>
-						<div>
-							<h2 className="font-mono">Password</h2>
-							<input
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								type="password"
-								className={
-									!passwordsMatch
-										? "border-red-500"
-										: undefined
-								}
-							></input>
-						</div>
-						{type === "signup" && (
+					</CardTitle>
+				</CardHeader>
+				<Separator />
+				<CardContent className="pt-6">
+					<div className="flex flex-col gap-4 items-center">
+						<div className="pb-4 flex flex-col gap-2 text-lg">
 							<div>
-								<h2 className="font-mono">Confirm Password</h2>
-								<input
-									value={confirmPassword}
+								<h2 className="font-mono">Email</h2>
+								<Input
+									value={email}
+									onChange={(e) => setEmail(e.target.value)}
+								/>
+							</div>
+							<div>
+								<h2 className="font-mono">Password</h2>
+								<Input
+									value={password}
 									onChange={(e) =>
-										setConfirmPassword(e.target.value)
+										setPassword(e.target.value)
 									}
+									type="password"
 									className={
 										!passwordsMatch
 											? "border-red-500"
 											: undefined
 									}
-									type="password"
-								></input>
+								/>
 							</div>
-						)}
-						<div className="flex flex-col gap-2 mt-8">
-							{type === "login" && (
-								<button
-									className="flex-grow text-md"
-									onClick={() => login(email, password)}
-								>
-									Log In
-								</button>
+							{type === "signup" && (
+								<div>
+									<h2 className="font-mono">
+										Confirm Password
+									</h2>
+									<Input
+										value={confirmPassword}
+										onChange={(e) =>
+											setConfirmPassword(e.target.value)
+										}
+										type="password"
+										className={
+											!passwordsMatch
+												? "border-red-500"
+												: undefined
+										}
+									/>
+								</div>
 							)}
-							<button
-								className="flex-grow text-md"
-								onClick={
-									type === "login"
-										? () =>
-												(window.location.href =
-													"/signup")
-										: () =>
-												validateAndSignup(
-													email,
-													password,
-													confirmPassword
-												)
-								}
-							>
-								Sign Up
-							</button>
+							<div className="flex flex-col gap-2 mt-8">
+								{type === "login" && (
+									<Button
+										className="flex-grow text-md"
+										onClick={() => login(email, password)}
+									>
+										Log In
+									</Button>
+								)}
+								<Button
+									className="flex-grow text-md"
+									onClick={
+										type === "login"
+											? () =>
+													(window.location.href =
+														"/signup")
+											: () =>
+													validateAndSignup(
+														email,
+														password,
+														confirmPassword
+													)
+									}
+								>
+									Sign Up
+								</Button>
+							</div>
 						</div>
 					</div>
-				</div>
+				</CardContent>
 			</Card>
 		</div>
 	);
