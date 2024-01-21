@@ -1,12 +1,11 @@
 from rest_framework import serializers
-from ztpai.api.models import Coffee, Flavor, Origin, Species, Roast, User
+from ztpai.api.models import Coffee, Flavor, Origin, Species, Roast, User, CoffeeRating, Group, UserGroup
 from django.contrib.auth.models import User as AuthUser
 from django.contrib.auth.hashers import make_password
+from django.db.models import Avg
 
 
 class CoffeeSerializer(serializers.HyperlinkedModelSerializer):
-
-    # make sure to display the name of the origin, not the id
     origin = serializers.PrimaryKeyRelatedField(
         queryset=Origin.objects.all(), many=False)
 
@@ -19,12 +18,18 @@ class CoffeeSerializer(serializers.HyperlinkedModelSerializer):
     flavors = serializers.PrimaryKeyRelatedField(
         queryset=Flavor.objects.all(), many=True)
 
+    score = serializers.SerializerMethodField()
+
     class Meta:
         model = Coffee
         fields = ['id', 'name', 'roast', 'origin',
-                  'species', 'flavors', 'date_added']
-        
-        
+                  'species', 'flavors', 'date_added', 'score']
+
+    def get_score(self, obj):
+        ratings = CoffeeRating.objects.filter(coffee=obj)
+        return ratings.aggregate(Avg('rating'))['rating__avg'] or 0
+
+
 class FlavorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Flavor
@@ -71,3 +76,43 @@ class SignInSerializer(serializers.Serializer):
 
 class RefreshSerializer(serializers.Serializer):
     refresh = serializers.CharField()
+
+
+class CoffeeRatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CoffeeRating
+        fields = ['coffee', 'user', 'rating', 'date_added']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    user_ratings = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('email', 'user_ratings')
+
+    def get_user_ratings(self, obj):
+        ratings = CoffeeRating.objects.filter(
+            user=obj)
+        return CoffeeRatingSerializer(ratings, many=True).data
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ['name']
+
+
+class UserGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserGroup
+        fields = ['user', 'group']
+
+    def create(self, validated_data):
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
+
+    def validate(self, data):
+        return super().validate(data)
