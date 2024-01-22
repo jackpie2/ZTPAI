@@ -79,9 +79,14 @@ class RefreshSerializer(serializers.Serializer):
 
 
 class CoffeeRatingSerializer(serializers.ModelSerializer):
+    coffee_name = serializers.SerializerMethodField()
+
     class Meta:
         model = CoffeeRating
-        fields = ['coffee', 'user', 'rating', 'date_added']
+        fields = ['coffee', 'user', 'rating', 'date_added', 'coffee_name']
+
+    def get_coffee_name(self, obj):
+        return obj.coffee.name
 
 
 class UserSerializer(serializers.ModelSerializer):

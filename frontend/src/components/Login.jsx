@@ -8,12 +8,14 @@ import { Separator } from "@/components/ui/separator";
 import { Coffee } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 export default function Login({ type = "login" }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [passwordsMatch, setPasswordsMatch] = useState(true);
+	const navigate = useNavigate();
 
 	const signup = (email, password) => {
 		fetch("http://127.0.0.1:8000/signup/", {
@@ -29,7 +31,7 @@ export default function Login({ type = "login" }) {
 			.then((response) => response.json())
 			.then((data) => {
 				if (!data.error) {
-					window.location.href = "/login";
+					navigate("/login");
 				}
 			});
 	};
@@ -51,7 +53,7 @@ export default function Login({ type = "login" }) {
 				if (!data.error) {
 					localStorage.setItem("token", data.token);
 					localStorage.setItem("refresh", data.refresh);
-					window.location.href = "/";
+					navigate("/");
 				}
 			});
 	};
@@ -137,9 +139,7 @@ export default function Login({ type = "login" }) {
 									className="flex-grow text-md"
 									onClick={
 										type === "login"
-											? () =>
-													(window.location.href =
-														"/signup")
+											? () => navigate("/signup")
 											: () =>
 													validateAndSignup(
 														email,

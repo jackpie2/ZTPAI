@@ -12,6 +12,8 @@ import {
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 import { fetcher } from "../helpers/fetcher";
+import { Loader2 } from "lucide-react";
+import { Star, Map, Bean, Flame } from "lucide-react";
 
 function useCoffeeList() {
 	const { data, error, isLoading } = useSWR(
@@ -28,25 +30,29 @@ function useCoffeeList() {
 export default function List() {
 	const { coffeeData, error, isLoading } = useCoffeeList();
 
+	console.log(coffeeData);
+
 	if (isLoading) {
 		return (
-			<div className="py-5 flex flex-col items-center">
-				<div className="md:w-[768px] w-[97%] flex flex-col gap-4">
-					<Card>
-						<div className="p-3 flex justify-center text-xl">
-							Loading...
-						</div>
-					</Card>
-				</div>
+			<div className="grow flex items-center justify-center">
+				<Loader2
+					className="animate-spin"
+					size={48}
+					absoluteStrokeWidth
+				/>
 			</div>
 		);
 	}
 
 	return (
-		<div className="md:w-[768px] w-[97%] flex flex-col gap-4">
+		<div className="flex flex-col gap-4 w-full">
 			{coffeeData.results.map((coffee) => (
-				<Link to={`/coffee/${coffee.id}`} key={coffee.name}>
-					<Card>
+				<Link
+					to={`/coffee/${coffee.id}`}
+					key={coffee.name}
+					className="w-full"
+				>
+					<Card className="w-full">
 						<CardHeader>
 							<CardTitle>{coffee.name}</CardTitle>
 						</CardHeader>
@@ -62,31 +68,19 @@ export default function List() {
 								<div className="text-lg flex-grow flex flex-col gap-2">
 									<div className="grid grid-cols-2">
 										<div className="flex items-center gap-2">
-											<FontAwesomeIcon
-												icon={faStar}
-												className="text-accent-foreground"
-											/>
-											<span>4.5</span>
+											<Star className="text-accent-foreground" />
+											<span>{coffee.score}</span>
 										</div>
 										<div className="flex items-center gap-2">
-											<FontAwesomeIcon
-												icon={faEarth}
-												className="text-accent-foreground"
-											/>
+											<Map className="text-accent-foreground" />
 											<span>{coffee.origin}</span>
 										</div>
 										<div className="flex items-center gap-2">
-											<FontAwesomeIcon
-												icon={faFire}
-												className="text-accent-foreground"
-											/>
+											<Flame className="text-accent-foreground" />
 											<span>{coffee.roast}</span>
 										</div>
 										<div className="flex items-center gap-2">
-											<FontAwesomeIcon
-												icon={faSeedling}
-												className="text-accent-foreground"
-											/>
+											<Bean className="text-accent-foreground" />
 											<span>{coffee.species ?? "?"}</span>
 										</div>
 									</div>

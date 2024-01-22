@@ -14,8 +14,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Coffee } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ModeToggle } from "./ModeToggle";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
+	const navigate = useNavigate();
+
 	return (
 		<div className="shadow-sm border-b flex w-full justify-start items-center font-mono text-3xl p-3 gap-4">
 			<NavigationMenu className={"w-full max-w-full justify-start"}>
@@ -52,11 +55,10 @@ export default function Navbar() {
 							</NavigationMenuItem>
 							<NavigationMenuItem>
 								<Link
-									to="/"
 									onClick={() => {
 										localStorage.removeItem("token");
 										localStorage.removeItem("refresh");
-										window.location.href = "/";
+										navigate("/");
 									}}
 								>
 									<NavigationMenuLink
