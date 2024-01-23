@@ -24,6 +24,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { refreshToken } from "../helpers/refresh";
 
 // function useUser(decodedToken) {
 // 	if (!decodedToken) return { user: null, isLoading: true, error: null };
@@ -40,32 +41,32 @@ import { Button } from "@/components/ui/button";
 // 	};
 // }
 
-function refreshToken(setDecodedToken, navigate) {
-	return fetch("http://localhost:8000/signin/refresh/", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({ refresh: localStorage.getItem("refresh") }),
-	})
-		.then((res) => {
-			if (!res.ok) {
-				throw res;
-			}
-			return res;
-		})
-		.then((res) => res.json())
-		.then((data) => {
-			localStorage.setItem("token", data.token);
-			localStorage.setItem("refresh", data.refresh);
-			setDecodedToken(jwtDecode(data.token));
-		})
-		.catch((err) => {
-			localStorage.removeItem("token");
-			localStorage.removeItem("refresh");
-			navigate("/login");
-		});
-}
+// function refreshToken(setDecodedToken, navigate) {
+// 	return fetch("http://localhost:8000/signin/refresh/", {
+// 		method: "POST",
+// 		headers: {
+// 			"Content-Type": "application/json",
+// 		},
+// 		body: JSON.stringify({ refresh: localStorage.getItem("refresh") }),
+// 	})
+// 		.then((res) => {
+// 			if (!res.ok) {
+// 				throw res;
+// 			}
+// 			return res;
+// 		})
+// 		.then((res) => res.json())
+// 		.then((data) => {
+// 			localStorage.setItem("token", data.token);
+// 			localStorage.setItem("refresh", data.refresh);
+// 			setDecodedToken(jwtDecode(data.token));
+// 		})
+// 		.catch((err) => {
+// 			localStorage.removeItem("token");
+// 			localStorage.removeItem("refresh");
+// 			navigate("/login");
+// 		});
+// }
 
 export default function Profile() {
 	const [decodedToken, setDecodedToken] = useState(
@@ -85,7 +86,7 @@ export default function Profile() {
 			return;
 		}
 
-		fetch("http://localhost:8000/users/" + decodedToken.user_id, {
+		fetch("http://localhost:8000/user/", {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -107,7 +108,9 @@ export default function Profile() {
 				if (err.status === 401) {
 					refreshToken(setDecodedToken, navigate);
 				} else {
-					console.log(err);
+					localStorage.removeItem("token");
+					localStorage.removeItem("refresh");
+					navigate("/login");
 				}
 			});
 	}, [decodedToken, navigate]);

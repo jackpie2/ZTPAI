@@ -18,9 +18,9 @@ router.register(r'flavors', views.FlavorViewSet)
 router.register(r'origins', views.OriginViewSet)
 router.register(r'species', views.SpeciesViewSet)
 router.register(r'roasts', views.RoastViewSet)
-router.register(r'users', views.UserViewSet)
-router.register(r'ratings', views.CoffeeRatingViewSet)
-router.register(r'groups', views.UserGroupViewSet)
+# router.register(r'users', views.UserViewSet)
+# router.register(r'ratings', views.CoffeeRatingViewSet)
+# router.register(r'groups', views.UserGroupViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -56,4 +56,11 @@ urlpatterns = [
     path('signin/refresh/', views.JWTRefresh.as_view(), name='token_refresh'),
     path('signup/', views.SignUp.as_view(), name='signup'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('coffee-user-review/<uuid:coffee_id>/',
+         views.CoffeeUserScore.as_view(), name='coffee_rating_list'),
+    path('users/', views.UsersView.as_view(), name='user_view'),
+    path('user/', views.UserView.as_view(), name='user_view'),
+    path('rate/', views.RateCoffee.as_view(), name='rate_coffee'),
+    path('all-reviews/<uuid:coffee_id>/',
+         views.AllReviews.as_view(), name='all_reviews'),
 ]

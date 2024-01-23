@@ -15,6 +15,7 @@ export default function Login({ type = "login" }) {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [passwordsMatch, setPasswordsMatch] = useState(true);
+	const [username, setUsername] = useState("");
 	const navigate = useNavigate();
 
 	const signup = (email, password) => {
@@ -26,6 +27,7 @@ export default function Login({ type = "login" }) {
 			body: JSON.stringify({
 				email: email,
 				password: password,
+				username: username,
 			}),
 		})
 			.then((response) => response.json())
@@ -92,6 +94,17 @@ export default function Login({ type = "login" }) {
 									onChange={(e) => setEmail(e.target.value)}
 								/>
 							</div>
+							{type === "signup" && (
+								<div>
+									<h2 className="font-mono">Username</h2>
+									<Input
+										value={username}
+										onChange={(e) =>
+											setUsername(e.target.value)
+										}
+									/>
+								</div>
+							)}
 							<div>
 								<h2 className="font-mono">Password</h2>
 								<Input
@@ -108,23 +121,27 @@ export default function Login({ type = "login" }) {
 								/>
 							</div>
 							{type === "signup" && (
-								<div>
-									<h2 className="font-mono">
-										Confirm Password
-									</h2>
-									<Input
-										value={confirmPassword}
-										onChange={(e) =>
-											setConfirmPassword(e.target.value)
-										}
-										type="password"
-										className={
-											!passwordsMatch
-												? "border-red-500"
-												: undefined
-										}
-									/>
-								</div>
+								<>
+									<div>
+										<h2 className="font-mono">
+											Confirm Password
+										</h2>
+										<Input
+											value={confirmPassword}
+											onChange={(e) =>
+												setConfirmPassword(
+													e.target.value
+												)
+											}
+											type="password"
+											className={
+												!passwordsMatch
+													? "border-red-500"
+													: undefined
+											}
+										/>
+									</div>
+								</>
 							)}
 							<div className="flex flex-col gap-2 mt-8">
 								{type === "login" && (

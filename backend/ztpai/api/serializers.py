@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from ztpai.api.models import Coffee, Flavor, Origin, Species, Roast, User, CoffeeRating, Group, UserGroup
-from django.contrib.auth.models import User as AuthUser
+from ztpai.api.models import Coffee, Flavor, Origin, Species, Roast, CoffeeRating, Group
+from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.db.models import Avg
 
@@ -55,12 +55,15 @@ class RoastSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
-        fields = ['email', 'password']
+        fields = ['username', 'email', 'password']
 
     def create(self, validated_data):
         user = User.objects.create(
+            username=validated_data['username'],
             email=validated_data['email'],
             password=make_password(validated_data['password'])
         )
@@ -80,13 +83,24 @@ class RefreshSerializer(serializers.Serializer):
 
 class CoffeeRatingSerializer(serializers.ModelSerializer):
     coffee_name = serializers.SerializerMethodField()
+    user_name = serializers.SerializerMethodField()
 
     class Meta:
         model = CoffeeRating
-        fields = ['coffee', 'user', 'rating', 'date_added', 'coffee_name']
+        fields = ['coffee', 'user', 'rating',
+                  'date_added', 'coffee_name', 'comment', 'user_name']
 
     def get_coffee_name(self, obj):
         return obj.coffee.name
+
+    def get_user_name(self, obj):
+        return obj.user.username
+
+
+class RateCoffeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CoffeeRating
+        fields = ['coffee', 'rating', 'comment']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -94,7 +108,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'user_ratings')
+        fields = ('username', 'email', 'user_ratings')
 
     def get_user_ratings(self, obj):
         ratings = CoffeeRating.objects.filter(
@@ -108,16 +122,16 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = ['name']
 
 
-class UserGroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserGroup
-        fields = ['user', 'group']
+# class UserGroupSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserGroup
+#         fields = ['user', 'group']
 
-    def create(self, validated_data):
-        return super().create(validated_data)
+#     def create(self, validated_data):
+#         return super().create(validated_data)
 
-    def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
+#     def update(self, instance, validated_data):
+#         return super().update(instance, validated_data)
 
-    def validate(self, data):
-        return super().validate(data)
+#     def validate(self, data):
+#         return super().validate(data)
