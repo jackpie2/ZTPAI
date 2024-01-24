@@ -1,3 +1,5 @@
+import { jwtDecode } from "jwt-decode";
+
 export function refreshToken(setDecodedToken, navigate) {
 	return fetch("http://localhost:8000/signin/refresh/", {
 		method: "POST",
@@ -16,6 +18,7 @@ export function refreshToken(setDecodedToken, navigate) {
 		.then((data) => {
 			localStorage.setItem("token", data.token);
 			localStorage.setItem("refresh", data.refresh);
+			setDecodedToken(jwtDecode(data.token));
 			return true;
 		})
 		.catch((err) => {
