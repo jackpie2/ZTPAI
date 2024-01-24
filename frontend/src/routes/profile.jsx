@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { refreshToken } from "../helpers/refresh";
+import { Label } from "@/components/ui/label";
 
 // function useUser(decodedToken) {
 // 	if (!decodedToken) return { user: null, isLoading: true, error: null };
@@ -136,8 +137,12 @@ export default function Profile() {
 				<CardContent className="pt-6">
 					<div className="flex flex-col gap-4">
 						<div className="flex flex-col gap-2">
-							<h2 className="text-2xl font-mono">Email</h2>
+							<Label className="text-xl">Email</Label>
 							<p className="text-xl font-mono">{user.email}</p>
+						</div>
+						<div className="flex flex-col gap-2">
+							<Label className="text-xl">Username</Label>
+							<p className="text-xl font-mono">{user.username}</p>
 						</div>
 					</div>
 				</CardContent>
@@ -147,12 +152,12 @@ export default function Profile() {
 					<CardContent className="pt-6">
 						<Table>
 							<TableCaption>
-								<h2 className="font-mono">Your rated coffee</h2>
+								<h2 className="font-mono">Your reviews</h2>
 							</TableCaption>
 							<TableHeader>
 								<TableRow>
 									<TableHead>Name</TableHead>
-									<TableHead>Rating</TableHead>
+									<TableHead>Score</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
