@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { refreshToken } from "../helpers/refresh";
 import { useNavigate } from "react-router-dom";
+import { CardFooter } from "../components/ui/card";
 
 function useCoffee(coffeeId) {
 	const { data, error, isLoading } = useSWR(
@@ -88,7 +89,8 @@ export default function Coffee() {
 	const [userReview, setUserReview] = useState("");
 	const [userScore, setUserScore] = useState(0);
 	const [userComment, setUserComment] = useState("");
-	const [reviewLoading, setReviewLoading] = useState(true);
+	const [userReviewLoading, setUserReviewLoading] = useState(true);
+	const [allReviewsLoading, setAllReviewLoading] = useState(true);
 	const [allReviews, setAllReviews] = useState([]);
 	const [decodedToken, setDecodedToken] = useState(
 		localStorage.getItem("token") !== "undefined"
@@ -133,7 +135,7 @@ export default function Coffee() {
 			.then((data) => {
 				setUserScore(data.rating);
 				setUserComment(data.comment);
-				setReviewLoading(false);
+				setUserReviewLoading(false);
 			})
 			.catch((err) => {
 				if (err.status === 401) {
@@ -158,13 +160,14 @@ export default function Coffee() {
 			.then((res) => res.json())
 			.then((data) => {
 				setAllReviews(data.results);
+				setAllReviewLoading(false);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 	}, [coffeeId]);
 
-	if (isLoading) {
+	if (isLoading || userReviewLoading || allReviewsLoading) {
 		return (
 			<div className="grow flex items-center justify-center">
 				<Loader2
@@ -212,15 +215,29 @@ export default function Coffee() {
 									<span>{coffeeData.species ?? "?"}</span>
 								</div>
 							</div>
-							<div className="flex gap-2 flex-wrap items-center flex-grow">
-								{coffeeData.flavors.map((tag) => (
-									<Badge key={tag}>{tag}</Badge>
-								))}
-							</div>
 						</div>
 					</div>
 				</CardContent>
+				<CardFooter className="text-xs font-mono justify-center text-muted-foreground">
+					<span>
+						Added on{" "}
+						{new Date(coffeeData.date_added).toLocaleDateString()}
+					</span>
+				</CardFooter>
 			</Card>
+			{coffeeData.flavors.length > 0 && (
+				<Card className="w-full">
+					<CardHeader>
+						<CardTitle>Flavors</CardTitle>
+					</CardHeader>
+					<Separator />
+					<CardContent className="pt-6 flex flex-wrap gap-2">
+						{coffeeData.flavors.map((tag) => (
+							<Badge key={tag}>{tag}</Badge>
+						))}
+					</CardContent>
+				</Card>
+			)}
 			{decodedToken && (
 				<Card className="w-full">
 					<CardHeader>
@@ -254,6 +271,7 @@ export default function Coffee() {
 					</CardContent>
 				</Card>
 			)}
+
 			<Card className="w-full">
 				<CardHeader>
 					<CardTitle>All reviews</CardTitle>

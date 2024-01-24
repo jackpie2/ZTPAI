@@ -137,11 +137,6 @@ class UserView(generics.RetrieveAPIView):
         return Response(serializer.data)
 
 
-# class CoffeeRatingViewSet(viewsets.ModelViewSet):
-#     queryset = CoffeeRating.objects.all().order_by('-date_added')
-#     serializer_class = CoffeeRatingSerializer
-
-
 class CoffeeUserScore(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
     queryset = CoffeeRating.objects.all()
@@ -174,6 +169,8 @@ class RateCoffee(generics.CreateAPIView):
         rating_data['user'] = user_id
         rating_data['rating'] = max(0, min(5, rating_data['rating']))
         if rating is None:
+            if rating_data['rating'] == 0:
+                return Response({'message': 'Rating not found'}, status=status.HTTP_404_NOT_FOUND)
             serializer = CoffeeRatingSerializer(data=rating_data)
             if serializer.is_valid():
                 serializer.save()
@@ -181,6 +178,9 @@ class RateCoffee(generics.CreateAPIView):
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
+            if rating_data['rating'] == 0:
+                rating.delete()
+                return Response({'message': 'Rating deleted successfully'}, status=status.HTTP_201_CREATED)
             serializer = CoffeeRatingSerializer(rating, data=rating_data)
             if serializer.is_valid():
                 serializer.save()
