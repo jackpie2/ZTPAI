@@ -7,6 +7,7 @@ import Layout from "./routes/layout.jsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Profile from "./routes/profile.jsx";
 import Coffee from "./routes/coffee.jsx";
+import Admin from "./routes/admin.jsx";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const router = createBrowserRouter([
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
 			{
 				path: "/coffee/:coffeeId",
 				element: <Coffee />,
+			},
+			{
+				path: "/admin",
+				element: <Admin />,
 			},
 		],
 	},

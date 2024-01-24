@@ -1,73 +1,20 @@
-import { jwtDecode } from "jwt-decode";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import useSWR from "swr";
-import { fetcher } from "../helpers/fetcher";
-import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
 import {
 	Table,
 	TableBody,
 	TableCaption,
 	TableCell,
-	TableFooter,
 	TableHead,
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+import { jwtDecode } from "jwt-decode";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { refreshToken } from "../helpers/refresh";
-import { Label } from "@/components/ui/label";
-
-// function useUser(decodedToken) {
-// 	if (!decodedToken) return { user: null, isLoading: true, error: null };
-
-// 	const { data, error, isLoading } = useSWR(
-// 		"http://localhost:8000/users/" + decodedToken.user_id,
-// 		fetcher
-// 	);
-
-// 	return {
-// 		user: data,
-// 		isLoading: isLoading,
-// 		error: error,
-// 	};
-// }
-
-// function refreshToken(setDecodedToken, navigate) {
-// 	return fetch("http://localhost:8000/signin/refresh/", {
-// 		method: "POST",
-// 		headers: {
-// 			"Content-Type": "application/json",
-// 		},
-// 		body: JSON.stringify({ refresh: localStorage.getItem("refresh") }),
-// 	})
-// 		.then((res) => {
-// 			if (!res.ok) {
-// 				throw res;
-// 			}
-// 			return res;
-// 		})
-// 		.then((res) => res.json())
-// 		.then((data) => {
-// 			localStorage.setItem("token", data.token);
-// 			localStorage.setItem("refresh", data.refresh);
-// 			setDecodedToken(jwtDecode(data.token));
-// 		})
-// 		.catch((err) => {
-// 			localStorage.removeItem("token");
-// 			localStorage.removeItem("refresh");
-// 			navigate("/login");
-// 		});
-// }
 
 export default function Profile() {
 	const [decodedToken, setDecodedToken] = useState(

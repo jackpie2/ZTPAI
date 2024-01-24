@@ -27,7 +27,8 @@ class CoffeeViewSet(viewsets.ModelViewSet):
     queryset = Coffee.objects.all().order_by('-date_added')
     serializer_class = CoffeeSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name', 'origin__name', 'species__name', 'flavors__name']
+    search_fields = ['name', 'origin__name',
+                     'species__name', 'flavors__name', 'roast__name']
 
 
 class FlavorViewSet(viewsets.ModelViewSet):
@@ -200,3 +201,48 @@ class AllReviews(generics.ListAPIView):
     def get_queryset(self):
         coffee_id = self.kwargs['coffee_id']
         return CoffeeRating.objects.filter(coffee=coffee_id)
+
+
+class AddCoffee(generics.CreateAPIView):
+    queryset = Coffee.objects.all()
+    serializer_class = CoffeeSerializer
+
+    def post(self, request, *args, **kwargs):
+        coffee_data = request.data
+        coffee_data['roast'] = Roast.objects.get(name=coffee_data['roast']).pk
+        origin = Origin.objects.filter(name=coffee_data['origin'])
+        if origin.exists():
+            coffee_data['origin'] = origin.first().pk
+        else:
+            coffee_data['origin'] = Origin.objects.create(
+                name=coffee_data['origin']).pk
+
+        flavors = []
+
+        for flavor in coffee_data['flavors']:
+            print(flavor)
+            flavor_obj = Flavor.objects.filter(name=flavor)
+            if flavor_obj.exists():
+                flavors.append(flavor_obj.first().pk)
+            else:
+                flavors.append(Flavor.objects.create(name=flavor).pk)
+
+        coffee_data['flavors'] = flavors
+
+        species = []
+
+        for specie in coffee_data['species']:
+            specie_obj = Species.objects.filter(name=specie)
+            if specie_obj.exists():
+                species.append(specie_obj.first().pk)
+            else:
+                species.append(Species.objects.create(name=specie).pk)
+
+        coffee_data['species'] = species
+
+        serializer = CoffeeSerializer(data=coffee_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Coffee added successfully'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

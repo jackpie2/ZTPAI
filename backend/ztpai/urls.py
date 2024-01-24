@@ -63,4 +63,5 @@ urlpatterns = [
     path('rate/', views.RateCoffee.as_view(), name='rate_coffee'),
     path('all-reviews/<uuid:coffee_id>/',
          views.AllReviews.as_view(), name='all_reviews'),
+    path('add-coffee/', views.AddCoffee.as_view(), name='add_coffee'),
 ]

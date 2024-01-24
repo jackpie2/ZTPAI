@@ -53,8 +53,6 @@ function Stars({ score, setStars, size }) {
 	);
 }
 
-function getAllReviews(coffeeId) {}
-
 function rate({ score, userId, coffeeId, navigate, setDecodedToken, comment }) {
 	fetch("http://localhost:8000/rate/", {
 		method: "POST",
@@ -86,7 +84,6 @@ function rate({ score, userId, coffeeId, navigate, setDecodedToken, comment }) {
 }
 
 export default function Coffee() {
-	const [userReview, setUserReview] = useState("");
 	const [userScore, setUserScore] = useState(0);
 	const [userComment, setUserComment] = useState("");
 	const [userReviewLoading, setUserReviewLoading] = useState(true);
