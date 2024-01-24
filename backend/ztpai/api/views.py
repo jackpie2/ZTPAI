@@ -19,12 +19,15 @@ from drf_spectacular.utils import extend_schema
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.plumbing import OpenApiParameter
 from ztpai.api import serializers
+from rest_framework import filters
 
 
 class CoffeeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
     queryset = Coffee.objects.all().order_by('-date_added')
     serializer_class = CoffeeSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'origin__name', 'species__name', 'flavors__name']
 
 
 class FlavorViewSet(viewsets.ModelViewSet):
