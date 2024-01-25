@@ -6,7 +6,9 @@ from django.contrib.auth.models import User
 
 class Coffee(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    name = models.TextField()
+    name = models.TextField(
+        unique=True
+    )
     roast = models.ForeignKey('Roast', on_delete=models.CASCADE)
     origin = models.ForeignKey('Origin', on_delete=models.CASCADE)
     species = models.ManyToManyField(
@@ -14,6 +16,9 @@ class Coffee(models.Model):
     flavors = models.ManyToManyField(
         'Flavor', blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
+    description = models.TextField(blank=True)
+    image = models.ForeignKey(
+        'CoffeeImage', on_delete=models.CASCADE, blank=True, null=True)
 
 
 class Flavor(models.Model):
@@ -61,3 +66,12 @@ class CoffeeRating(models.Model):
 
     class Meta:
         unique_together = ['coffee', 'user']
+
+
+class CoffeeImage(models.Model):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    image = models.ImageField(upload_to='images/', blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['image']

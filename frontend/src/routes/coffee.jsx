@@ -4,7 +4,7 @@ import { fetcher } from "../helpers/fetcher";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { Star, Map, Bean, Flame } from "lucide-react";
+import { Star, Map, Bean, Flame, Coffee } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -83,7 +83,7 @@ function rate({ score, userId, coffeeId, navigate, setDecodedToken, comment }) {
 		});
 }
 
-export default function Coffee() {
+export default function Root() {
 	const [userScore, setUserScore] = useState(0);
 	const [userComment, setUserComment] = useState("");
 	const [userReviewLoading, setUserReviewLoading] = useState(true);
@@ -115,7 +115,7 @@ export default function Coffee() {
 		if (!decodedToken) {
 			return;
 		}
-		fetch("http://localhost:8000/coffee-user-review/" + coffeeId, {
+		fetch("http://localhost:8000/user-review/" + coffeeId, {
 			method: "Get",
 			headers: {
 				"Content-Type": "application/json",
@@ -164,7 +164,7 @@ export default function Coffee() {
 			});
 	}, [coffeeId]);
 
-	if (isLoading || userReviewLoading || allReviewsLoading) {
+	if (isLoading || (decodedToken && userReviewLoading) || allReviewsLoading) {
 		return (
 			<div className="grow flex items-center justify-center">
 				<Loader2
@@ -187,14 +187,23 @@ export default function Coffee() {
 				<Separator />
 				<CardContent className="pt-6">
 					<div className="flex gap-5 items-center">
-						<img
-							src="/coffee.jpg"
-							width={128}
-							height={128}
-							className="rounded-md"
-						/>
+						{coffeeData.image_url ? (
+							<img
+								src={
+									"http://localhost:8000/" +
+									coffeeData.image_url
+								}
+								width={128}
+								height={128}
+								className="rounded-md"
+							/>
+						) : (
+							<div className="w-32 h-32 flex items-center justify-center text-muted-foreground border rounded-md">
+								<Coffee size={48} />
+							</div>
+						)}
 						<div className="text-lg flex-grow flex flex-col gap-2">
-							<div className="grid grid-cols-2">
+							<div className="grid md:grid-cols-2 grid-cols-1">
 								<div className="flex items-center gap-2">
 									<Star className="text-accent-foreground" />
 									<span>{coffeeData.score}</span>
@@ -209,7 +218,9 @@ export default function Coffee() {
 								</div>
 								<div className="flex items-center gap-2">
 									<Bean className="text-accent-foreground" />
-									<span>{coffeeData.species ?? "?"}</span>
+									<span>
+										{coffeeData.species.join(", ") ?? "?"}
+									</span>
 								</div>
 							</div>
 						</div>
@@ -222,6 +233,17 @@ export default function Coffee() {
 					</span>
 				</CardFooter>
 			</Card>
+			{coffeeData.description.length > 0 && (
+				<Card className="w-full">
+					<CardHeader>
+						<CardTitle>Description</CardTitle>
+					</CardHeader>
+					<Separator />
+					<CardContent className="pt-6">
+						{coffeeData.description}
+					</CardContent>
+				</Card>
+			)}
 			{coffeeData.flavors.length > 0 && (
 				<Card className="w-full">
 					<CardHeader>

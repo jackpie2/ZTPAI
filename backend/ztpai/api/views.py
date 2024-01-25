@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework import permissions
-from ztpai.api.serializers import CoffeeSerializer, FlavorSerializer, OriginSerializer, UserSerializer, CoffeeRatingSerializer
+from ztpai.api.serializers import CoffeeSerializer, FlavorSerializer, OriginSerializer, UserSerializer, CoffeeRatingSerializer, CoffeeImageSerializer
 from ztpai.api.serializers import SpeciesSerializer, RoastSerializer, RegisterSerializer, SignInSerializer, RefreshSerializer, Group
 from rest_framework_simplejwt.tokens import RefreshToken
 # Create your views here.
 
-from ztpai.api.models import Coffee, Flavor, Origin, Species, Roast, CoffeeRating
+from ztpai.api.models import Coffee, Flavor, Origin, Species, Roast, CoffeeRating, CoffeeImage
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 from rest_framework.views import APIView
@@ -28,7 +28,8 @@ class CoffeeViewSet(viewsets.ModelViewSet):
     serializer_class = CoffeeSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'origin__name',
-                     'species__name', 'flavors__name', 'roast__name']
+                     'species__name', 'flavors__name', 'roast__name', 'description']
+    http_method_names = ['get']
 
 
 class FlavorViewSet(viewsets.ModelViewSet):
@@ -227,7 +228,8 @@ class AddCoffee(generics.CreateAPIView):
             else:
                 flavors.append(Flavor.objects.create(name=flavor).pk)
 
-        coffee_data['flavors'] = flavors
+        coffee_data['flavors'] = flavors if len(
+            flavors) > 0 else None
 
         species = []
 
@@ -243,6 +245,29 @@ class AddCoffee(generics.CreateAPIView):
         serializer = CoffeeSerializer(data=coffee_data)
         if serializer.is_valid():
             serializer.save()
-            return Response({'message': 'Coffee added successfully'}, status=status.HTTP_201_CREATED)
+            return Response({'message': 'Coffee added successfully',
+                             'id': serializer.data['id']
+                             }, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AddImage(generics.CreateAPIView):
+    queryset = CoffeeImage.objects.all()
+    serializer_class = CoffeeImageSerializer
+
+    def post(self, request, *args, **kwargs):
+        image = request.FILES['image']
+        coffee_id = self.kwargs['coffee_id']
+        serializer = CoffeeImageSerializer(data={'image': image})
+        if serializer.is_valid():
+            serializer.save()
+            coffee = Coffee.objects.get(id=coffee_id)
+            coffee_image = CoffeeImage.objects.get(id=serializer.data['id'])
+            coffee.image = coffee_image
+            coffee.save()
+            return Response({'message': 'Image added successfully',
+                             'id': serializer.data['id']
+                             }, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

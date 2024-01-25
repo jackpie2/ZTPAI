@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from ztpai.api.models import Coffee, Flavor, Origin, Species, Roast, CoffeeRating, Group
+from ztpai.api.models import Coffee, Flavor, Origin, Species, Roast, CoffeeRating, Group, CoffeeImage
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.db.models import Avg
 
 
-class CoffeeSerializer(serializers.HyperlinkedModelSerializer):
+class CoffeeSerializer(serializers.ModelSerializer):
     origin = serializers.PrimaryKeyRelatedField(
         queryset=Origin.objects.all(), many=False)
 
@@ -20,14 +20,19 @@ class CoffeeSerializer(serializers.HyperlinkedModelSerializer):
 
     score = serializers.SerializerMethodField()
 
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Coffee
         fields = ['id', 'name', 'roast', 'origin',
-                  'species', 'flavors', 'date_added', 'score']
+                  'species', 'flavors', 'date_added', 'score', 'description', 'image_url']
 
     def get_score(self, obj):
         ratings = CoffeeRating.objects.filter(coffee=obj)
         return ratings.aggregate(Avg('rating'))['rating__avg'] or 0
+
+    def get_image_url(self, obj):
+        return str(obj.image.image) if obj.image else None
 
 
 class FlavorSerializer(serializers.HyperlinkedModelSerializer):
@@ -120,6 +125,12 @@ class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ['name']
+
+
+class CoffeeImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CoffeeImage
+        fields = ['image', 'id']
 
 
 # class UserGroupSerializer(serializers.ModelSerializer):
