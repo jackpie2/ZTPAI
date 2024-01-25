@@ -1,5 +1,6 @@
 import Navbar from "../components/Navbar";
 import { Outlet } from "react-router-dom";
+import { Toaster } from "../components/ui/toaster";
 
 export default function Layout() {
 	return (
@@ -8,6 +9,7 @@ export default function Layout() {
 			<div className="flex-grow flex justify-center max-w-3xl w-full px-1 pb-10">
 				<Outlet />
 			</div>
+			<Toaster />
 		</div>
 	);
 }

@@ -1,12 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Bean, Flame, Loader2, Map, Star } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import useSWR from "swr";
-import { fetcher } from "../helpers/fetcher";
 import {
 	Pagination,
 	PaginationContent,
@@ -16,8 +10,19 @@ import {
 	PaginationNext,
 	PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Button } from "../components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { Separator } from "@/components/ui/separator";
+import { Bean, Flame, Loader2, Map, Star, Coffee } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import useSWR from "swr";
+import { fetcher } from "../helpers/fetcher";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function useCoffeeList(search, page) {
 	console.log(search.length);
@@ -45,6 +50,10 @@ export default function Root() {
 			setMaxPage(Math.ceil(coffeeData.count / 5));
 		}
 	}, [isLoading, coffeeData]);
+
+	useEffect(() => {
+		setPage(1);
+	}, [search]);
 
 	return (
 		<div className="flex flex-col gap-4 w-full">
@@ -89,14 +98,23 @@ export default function Root() {
 								<Separator />
 								<CardContent className="pt-6">
 									<div className="flex gap-5 items-center">
-										<img
-											src="/coffee.jpg"
-											width={128}
-											height={128}
-											className="rounded-md"
-										/>
+										{coffee.image_url ? (
+											<img
+												src={
+													"http://localhost:8000/" +
+													coffee.image_url
+												}
+												width={128}
+												height={128}
+												className="rounded-md"
+											/>
+										) : (
+											<div className="w-32 h-32 flex items-center justify-center text-muted-foreground border rounded-md">
+												<Coffee size={48} />
+											</div>
+										)}
 										<div className="text-lg flex-grow flex flex-col gap-2">
-											<div className="grid grid-cols-2">
+											<div className="grid md:grid-cols-2 grid-cols-1">
 												<div className="flex items-center gap-2">
 													<Star className="text-accent-foreground" />
 													<span>{coffee.score}</span>
@@ -112,7 +130,9 @@ export default function Root() {
 												<div className="flex items-center gap-2">
 													<Bean className="text-accent-foreground" />
 													<span>
-														{coffee.species ?? "?"}
+														{coffee.species.join(
+															", "
+														) ?? "?"}
 													</span>
 												</div>
 											</div>

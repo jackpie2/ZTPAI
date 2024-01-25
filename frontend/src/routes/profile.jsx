@@ -15,6 +15,7 @@ import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { refreshToken } from "../helpers/refresh";
+import { Star, Map, Bean, Flame } from "lucide-react";
 
 export default function Profile() {
 	const [decodedToken, setDecodedToken] = useState(
@@ -84,11 +85,13 @@ export default function Profile() {
 				<CardContent className="pt-6">
 					<div className="flex flex-col gap-4">
 						<div className="flex flex-col gap-2">
-							<Label className="text-xl">Email</Label>
+							<Label className="text-xl font-bold">Email</Label>
 							<p className="text-xl font-mono">{user.email}</p>
 						</div>
 						<div className="flex flex-col gap-2">
-							<Label className="text-xl">Username</Label>
+							<Label className="text-xl font-bold">
+								Username
+							</Label>
 							<p className="text-xl font-mono">{user.username}</p>
 						</div>
 					</div>
@@ -111,7 +114,7 @@ export default function Profile() {
 								{user.user_ratings.map((rating) => (
 									<TableRow
 										key={rating.coffee_name}
-										className="hover:cursor-pointer"
+										className="hover:cursor-pointer text-lg"
 										onClick={() =>
 											navigate("/coffee/" + rating.coffee)
 										}
@@ -119,7 +122,14 @@ export default function Profile() {
 										<TableCell>
 											{rating.coffee_name}
 										</TableCell>
-										<TableCell>{rating.rating}</TableCell>
+										<TableCell className="flex items-center gap-2">
+											<span>{rating.rating}</span>
+											<Star
+												className="text-accent-foreground"
+												size={16}
+												fill="currentColor"
+											/>
+										</TableCell>
 									</TableRow>
 								))}
 							</TableBody>
@@ -129,12 +139,8 @@ export default function Profile() {
 			) : (
 				<Card className="w-full">
 					<CardContent className="pt-6">
-						<div className="flex flex-col gap-4">
-							<div className="flex flex-col gap-2">
-								<h2 className="text-2xl font-mono">
-									You haven&apos;t rated any coffee yet!
-								</h2>
-							</div>
+						<div className="flex flex-col gap-4 text-center text-accent-foreground">
+							<span>You haven't rated anything yet.</span>
 						</div>
 					</CardContent>
 				</Card>
