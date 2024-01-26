@@ -97,10 +97,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
-        'USER': 'postgres.psrdjzfnndatxponkfrf',
+        'USER': dotenv_values(".env")['USER'],
         'PASSWORD': dotenv_values(".env")['PASSWORD'],
         'HOST': dotenv_values(".env")['HOST'],
-        'PORT': '6543',
+        'PORT': dotenv_values(".env")['PORT'],
     }
 }
 
@@ -164,4 +164,5 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=3),
 }
