@@ -1,7 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 
 export function refreshToken(setDecodedToken, navigate) {
-	return fetch("http://localhost:8000/signin/refresh/", {
+	fetch("http://localhost:8000/signin/refresh/", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

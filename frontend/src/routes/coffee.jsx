@@ -20,7 +20,7 @@ function useCoffee(coffeeId) {
 		fetcher
 	);
 	return {
-		coffeeData: data,
+		coffee: data,
 		error,
 		isLoading,
 	};
@@ -53,7 +53,7 @@ function Stars({ score, setStars, size }) {
 	);
 }
 
-function rate({ score, userId, coffeeId, navigate, setDecodedToken, comment }) {
+function rate({ score, coffeeId, navigate, setDecodedToken, comment }) {
 	fetch("http://localhost:8000/rate/", {
 		method: "POST",
 		headers: {
@@ -97,13 +97,12 @@ export default function Root() {
 			: null
 	);
 	const { coffeeId } = useParams();
-	const { coffeeData, error, isLoading } = useCoffee(coffeeId);
+	const { coffee, error, isLoading } = useCoffee(coffeeId);
 	const navigate = useNavigate();
 
 	const sendReview = () => {
 		rate({
 			score: userScore,
-			userId: decodedToken ? decodedToken.user_id : null,
 			coffeeId: coffeeId,
 			navigate: navigate,
 			setDecodedToken: setDecodedToken,
@@ -181,17 +180,19 @@ export default function Root() {
 			<Card className="w-full">
 				<CardHeader>
 					<CardTitle className="flex justify-start items-center gap-4">
-						{coffeeData.name}
+						{coffee.name}
 					</CardTitle>
 				</CardHeader>
 				<Separator />
 				<CardContent className="pt-6">
 					<div className="flex gap-5 items-center">
-						{coffeeData.image_url ? (
+						{coffee.image_url ? (
 							<img
 								src={
 									"http://localhost:8000/" +
-									coffeeData.image_url
+									(coffee.image_url.startsWith("images/")
+										? coffee.image_url
+										: "images/" + coffee.image_url)
 								}
 								width={128}
 								height={128}
@@ -206,20 +207,20 @@ export default function Root() {
 							<div className="grid md:grid-cols-2 grid-cols-1">
 								<div className="flex items-center gap-2">
 									<Star className="text-accent-foreground" />
-									<span>{coffeeData.score}</span>
+									<span>{coffee.score}</span>
 								</div>
 								<div className="flex items-center gap-2">
 									<Map className="text-accent-foreground" />
-									<span>{coffeeData.origin}</span>
+									<span>{coffee.origin}</span>
 								</div>
 								<div className="flex items-center gap-2">
 									<Flame className="text-accent-foreground" />
-									<span>{coffeeData.roast}</span>
+									<span>{coffee.roast}</span>
 								</div>
 								<div className="flex items-center gap-2">
 									<Bean className="text-accent-foreground" />
 									<span>
-										{coffeeData.species.join(", ") ?? "?"}
+										{coffee.species.join(", ") ?? "?"}
 									</span>
 								</div>
 							</div>
@@ -229,29 +230,29 @@ export default function Root() {
 				<CardFooter className="text-xs font-mono justify-center text-muted-foreground">
 					<span>
 						Added on{" "}
-						{new Date(coffeeData.date_added).toLocaleDateString()}
+						{new Date(coffee.date_added).toLocaleDateString()}
 					</span>
 				</CardFooter>
 			</Card>
-			{coffeeData.description.length > 0 && (
+			{coffee.description.length > 0 && (
 				<Card className="w-full">
 					<CardHeader>
 						<CardTitle>Description</CardTitle>
 					</CardHeader>
 					<Separator />
 					<CardContent className="pt-6">
-						{coffeeData.description}
+						{coffee.description}
 					</CardContent>
 				</Card>
 			)}
-			{coffeeData.flavors.length > 0 && (
+			{coffee.flavors.length > 0 && (
 				<Card className="w-full">
 					<CardHeader>
 						<CardTitle>Flavors</CardTitle>
 					</CardHeader>
 					<Separator />
 					<CardContent className="pt-6 flex flex-wrap gap-2">
-						{coffeeData.flavors.map((tag) => (
+						{coffee.flavors.map((tag) => (
 							<Badge key={tag}>{tag}</Badge>
 						))}
 					</CardContent>

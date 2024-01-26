@@ -10,12 +10,14 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
+import { AlertTriangle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
-import { Toaster } from "@/components/ui/toaster";
-import { useToast } from "@/components/ui/use-toast";
-import { AlertTriangle } from "lucide-react";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import { refreshToken } from "../helpers/refresh";
 
 export default function Admin() {
 	const [name, setName] = useState("");
@@ -25,6 +27,26 @@ export default function Admin() {
 	const [flavors, setFlavors] = useState("");
 	const [desc, setDesc] = useState("");
 	const [image, setImage] = useState(null);
+	const [decodedToken, setDecodedToken] = useState(
+		!localStorage.getItem("token") ||
+			localStorage.getItem("token") !== "undefined"
+			? jwtDecode(localStorage.getItem("token"))
+			: null
+	);
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (!decodedToken) {
+			localStorage.removeItem("token");
+			localStorage.removeItem("refresh");
+			navigate("/login");
+			return;
+		}
+
+		if (!decodedToken.admin) {
+			navigate("/");
+		}
+	}, [decodedToken, navigate]);
 
 	const { toast } = useToast();
 
@@ -54,10 +76,10 @@ export default function Admin() {
 			})
 			.then((res) => res.json())
 			.then((data) => {
-				console.log(data);
+				alert("Image added!");
 			})
 			.catch((err) => {
-				console.log(err);
+				alert(err.statusText);
 			});
 	};
 
@@ -66,6 +88,7 @@ export default function Admin() {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
+				Authorization: "Bearer " + localStorage.getItem("token"),
 			},
 			body: JSON.stringify({
 				name: name,
@@ -90,14 +113,14 @@ export default function Admin() {
 				}
 			})
 			.catch((err) => {
-				console.log(err);
-				alert(err.statusText);
+				if (err.status === 401) {
+					refreshToken(setDecodedToken, navigate);
+					handleAddCoffee();
+				} else {
+					alert(err.statusText);
+				}
 			});
 	};
-
-	useEffect(() => {
-		console.log(image);
-	}, [image]);
 
 	return (
 		<div className="w-full flex flex-col grow items-center">

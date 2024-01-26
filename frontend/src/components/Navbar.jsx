@@ -1,33 +1,26 @@
 import {
 	NavigationMenu,
-	NavigationMenuContent,
-	NavigationMenuIndicator,
 	NavigationMenuItem,
 	NavigationMenuLink,
 	NavigationMenuList,
-	NavigationMenuTrigger,
-	NavigationMenuViewport,
 	navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from "@/components/ui/sheet";
 import {
 	faArrowRightFromBracket,
 	faArrowRightToBracket,
 	faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Coffee } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Coffee, LogIn, Menu, UserRound } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { ModeToggle } from "./ModeToggle";
-import { useNavigate } from "react-router-dom";
-import { Menu, LogIn, UserRound } from "lucide-react";
-import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger,
-} from "@/components/ui/sheet";
 import { Button } from "./ui/button";
 
 export default function Navbar() {
@@ -53,8 +46,10 @@ export default function Navbar() {
 						<ModeToggle />
 					</NavigationMenuItem>
 					<Sheet>
-						<SheetTrigger className="md:hidden w-9 h-9 flex items-center justify-center">
-							<Menu />
+						<SheetTrigger className="md:hidden flex items-center justify-center">
+							<Button variant="outline" size="icon">
+								<Menu />
+							</Button>
 						</SheetTrigger>
 						<SheetContent>
 							<SheetHeader>

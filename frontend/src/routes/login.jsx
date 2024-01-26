@@ -2,19 +2,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Coffee } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { AlertTriangle, Coffee } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Label } from "../components/ui/label";
-import { Toaster } from "@/components/ui/toaster";
-import { useToast } from "@/components/ui/use-toast";
-import { AlertTriangle } from "lucide-react";
 
 export default function Login({ type = "login" }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
-	const [passwordsMatch, setPasswordsMatch] = useState(true);
 	const [username, setUsername] = useState("");
 	const navigate = useNavigate();
 
@@ -49,6 +46,12 @@ export default function Login({ type = "login" }) {
 				password: password,
 			}),
 		})
+			.then((response) => {
+				if (response.status === 401) {
+					throw new Error("Invalid credentials.");
+				}
+				return response;
+			})
 			.then((response) => response.json())
 			.then((data) => {
 				console.log(data);
@@ -57,6 +60,9 @@ export default function Login({ type = "login" }) {
 					localStorage.setItem("refresh", data.refresh);
 					navigate("/");
 				}
+			})
+			.catch((err) => {
+				alert(err.message);
 			});
 	};
 

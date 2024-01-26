@@ -1,6 +1,5 @@
 from django.db import models
 import uuid
-import hashlib
 from django.contrib.auth.models import User
 
 
@@ -37,19 +36,6 @@ class Species(models.Model):
     name = models.TextField(primary_key=True)
 
 
-# class User(models.Model):
-#     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-#     email = models.TextField(unique=True)
-#     password = models.TextField()
-
-
-# class UserGroup(models.Model):
-#     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-#     user = models.ForeignKey('User', on_delete=models.CASCADE)
-#     group = models.ForeignKey('Group', on_delete=models.CASCADE)
-#     added_at = models.DateTimeField(auto_now_add=True)
-
-
 class Group(models.Model):
     name = models.TextField(primary_key=True)
 
@@ -70,7 +56,7 @@ class CoffeeRating(models.Model):
 
 class CoffeeImage(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    image = models.ImageField(upload_to='images/', blank=True)
+    image = models.ImageField(upload_to='', blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
 
     class Meta:

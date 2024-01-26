@@ -1,24 +1,24 @@
-from django.urls import include, path
-from rest_framework import routers
-from ztpai.api import views
+from django.conf import settings
+from django.conf.urls.static import static
+from django.urls import include, path, re_path
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions, routers
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
+    TokenVerifyView,
 )
-from django.urls import re_path
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
-from rest_framework_simplejwt.views import TokenVerifyView
-from django.conf import settings
-from django.conf.urls.static import static
+
+from ztpai.api import views
 
 router = routers.DefaultRouter()
 router.register(r'coffees', views.CoffeeViewSet)
-# router.register(r'users', views.UserViewSet)
-# router.register(r'ratings', views.CoffeeRatingViewSet)
-# router.register(r'groups', views.UserGroupViewSet)
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -36,20 +36,12 @@ schema_view = get_schema_view(
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    # path('swagger<format>/', schema_view.without_ui(cache_timeout=0),
-    #      name='schema-json'),
-    # path('swagger/', schema_view.with_ui('swagger',
-    #      cache_timeout=0), name='schema-swagger-ui'),
-    # path('redoc/', schema_view.with_ui('redoc',
-    #                                    cache_timeout=0), name='schema-redoc'),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    # Optional UI:
     path('swagger/',
          SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('redoc/',
          SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('', include(router.urls)),
-    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('signin/', views.JWTAuth.as_view(), name='jwt_auth'),
     path('signin/refresh/', views.JWTRefresh.as_view(), name='token_refresh'),
     path('signup/', views.SignUp.as_view(), name='signup'),

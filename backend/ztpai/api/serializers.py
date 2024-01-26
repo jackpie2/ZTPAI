@@ -1,8 +1,18 @@
-from rest_framework import serializers
-from ztpai.api.models import Coffee, Flavor, Origin, Species, Roast, CoffeeRating, Group, CoffeeImage
-from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
 from django.db.models import Avg
+from rest_framework import serializers
+
+from ztpai.api.models import (
+    Coffee,
+    CoffeeImage,
+    CoffeeRating,
+    Flavor,
+    Group,
+    Origin,
+    Roast,
+    Species,
+)
 
 
 class CoffeeSerializer(serializers.ModelSerializer):
@@ -131,18 +141,3 @@ class CoffeeImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = CoffeeImage
         fields = ['image', 'id']
-
-
-# class UserGroupSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = UserGroup
-#         fields = ['user', 'group']
-
-#     def create(self, validated_data):
-#         return super().create(validated_data)
-
-#     def update(self, instance, validated_data):
-#         return super().update(instance, validated_data)
-
-#     def validate(self, data):
-#         return super().validate(data)

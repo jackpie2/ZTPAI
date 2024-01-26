@@ -11,18 +11,11 @@ import {
 	PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Separator } from "@/components/ui/separator";
-import { Bean, Flame, Loader2, Map, Star, Coffee } from "lucide-react";
+import { Bean, Coffee, Flame, Loader2, Map, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 import { fetcher } from "../helpers/fetcher";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function useCoffeeList(search, page) {
 	console.log(search.length);
@@ -102,7 +95,12 @@ export default function Root() {
 											<img
 												src={
 													"http://localhost:8000/" +
-													coffee.image_url
+													(coffee.image_url.startsWith(
+														"images/"
+													)
+														? coffee.image_url
+														: "images/" +
+														  coffee.image_url)
 												}
 												width={128}
 												height={128}

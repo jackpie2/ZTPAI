@@ -11,11 +11,11 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { jwtDecode } from "jwt-decode";
-import { Loader2 } from "lucide-react";
+import { Loader2, Star } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { refreshToken } from "../helpers/refresh";
-import { Star, Map, Bean, Flame } from "lucide-react";
+import { Button } from "../components/ui/button";
 
 export default function Profile() {
 	const [decodedToken, setDecodedToken] = useState(
@@ -97,6 +97,19 @@ export default function Profile() {
 					</div>
 				</CardContent>
 			</Card>
+			{decodedToken.admin && (
+				<Card className="w-full">
+					<CardHeader>
+						<CardTitle>Add coffee</CardTitle>
+					</CardHeader>
+					<Separator />
+					<CardContent className="pt-6">
+						<Button className="w-full">
+							<Link to="/admin">Coffee submission panel</Link>
+						</Button>
+					</CardContent>
+				</Card>
+			)}
 			{user.user_ratings.length > 0 ? (
 				<Card className="w-full">
 					<CardContent className="pt-6">
