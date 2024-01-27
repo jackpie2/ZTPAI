@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 
-export function refreshToken(setDecodedToken, navigate) {
+export function refreshToken(setDecodedToken, navigate, loginOnErr = true) {
 	fetch("http://localhost:8000/signin/refresh/", {
 		method: "POST",
 		headers: {
@@ -24,6 +24,8 @@ export function refreshToken(setDecodedToken, navigate) {
 		.catch((err) => {
 			localStorage.removeItem("token");
 			localStorage.removeItem("refresh");
-			navigate("/login");
+			if (loginOnErr) {
+				navigate("/login");
+			}
 		});
 }

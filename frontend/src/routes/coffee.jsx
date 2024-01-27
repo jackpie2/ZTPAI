@@ -73,12 +73,10 @@ function rate({ score, coffeeId, navigate, setDecodedToken, comment }) {
 			return res;
 		})
 		.then((res) => res.json())
-		.then((data) => {
-			console.log(data);
-		})
+		.then((data) => {})
 		.catch((err) => {
 			if (err.status === 401) {
-				refreshToken(setDecodedToken, navigate);
+				refreshToken(setDecodedToken, navigate, false);
 			}
 		});
 }

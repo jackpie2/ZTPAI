@@ -1,7 +1,6 @@
 
 import threading
 import pika
-import pika
 from dotenv import dotenv_values
 
 config = dotenv_values("queue/.env")
