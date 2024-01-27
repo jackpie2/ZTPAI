@@ -62,6 +62,7 @@ class JWTAuth(APIView):
             user = user.first()
             if check_password(password, user.password):
                 token = RefreshToken.for_user(user)
+                token['admin'] = user.is_superuser
 
                 return Response({
                     'token': str(token.access_token),
@@ -83,6 +84,8 @@ class JWTRefresh(APIView):
     def post(self, request, format=None):
         refresh = request.data['refresh']
         token = RefreshToken(refresh)
+        token['admin'] = User.objects.get(
+            email=token['email']).is_superuser
         return Response({
             'token': str(token.access_token),
             'refresh': str(token)
